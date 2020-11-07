@@ -1,0 +1,21 @@
+.movie-card{
+    background-color:	LIGHTSALMON;
+    margin-bottom: 5px;
+    border-radius: 15%;
+    transition-duration: 800ms;
+}
+
+.movie-card:hover{
+    background-color: lightcoral;
+}
+
+.icon-style{
+    color:white;
+    cursor:pointer;
+    margin-left: 2%;
+    transition-duration: 500ms;
+}
+
+.icon-style:hover{
+    color:blue;
+}

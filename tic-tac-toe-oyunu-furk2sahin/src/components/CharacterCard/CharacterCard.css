@@ -1,0 +1,37 @@
+.grid-div-light{
+    background-color: #E3D3D0;
+    text-align: center;
+    padding: 50px;
+    font-size:50px;
+    cursor: pointer;
+    color:  #E3D3D0;
+}
+
+.grid-div-clicked-light{
+    background-color:#E3D3D0;
+    text-align: center;
+    padding: 50px;
+    font-size:50px;
+    cursor: pointer;
+    color: red;
+}
+
+.grid-div-dark{
+    background-color: #302D2C;
+    text-align: center;
+    padding: 50px;
+    font-size:50px;
+    cursor: pointer;
+    color: #302D2C;
+}
+
+.grid-div-clicked-dark{
+    background-color: #302D2C;
+    text-align: center;
+    padding: 50px;
+    font-size:50px;
+    cursor: pointer;
+    color: white;
+}
+
+
