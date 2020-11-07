@@ -2,6 +2,8 @@
 
 ## Tic Tac Toe Oyunu
 
+![](public/output.gif)
+
 2 kişinin oynayabileceği bir Tic Tac Toe oyunu yapmanızı bekliyoruz. Tasarımı size kalmakla birlikte referans olması açısından bir görsel ekledik.
 
 ### Oyun Akışı
