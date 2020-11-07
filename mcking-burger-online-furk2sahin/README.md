@@ -1,5 +1,7 @@
 # Mcking Burger
 
+![](public/output.gif)
+
 Bu ödevde online hamburger siparişi verebileceğimiz bir sistem yapacağız.
 
 ## Giriş
