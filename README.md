@@ -2,7 +2,7 @@
 
 ## Film Listesi
 
-# Çıktı:
+# Link: [film-listesi-odevi-furk2sahin.surge.sh](http://film-listesi-odevi-furk2sahin.surge.sh)
 ![](film-listesi-odevi-furk2sahin/outputs/output.gif)
 
 Component kavramını daha iyi anlayabilmek için bir film listesi yapabilirsiniz.
@@ -37,7 +37,7 @@ import movies from './movies';
 
 ## Tic Tac Toe Oyunu
 
-# Çıktı:
+#  Link: [tic-tac-toe-oyunu-furk2sahin.surge.sh](http://tic-tac-toe-oyunu-furk2sahin.surge.sh)
 ![](tic-tac-toe-oyunu-furk2sahin/outputs/output.gif)
 
 2 kişinin oynayabileceği bir Tic Tac Toe oyunu yapmanızı bekliyoruz. Tasarımı size kalmakla birlikte referans olması açısından bir görsel ekledik.
@@ -65,7 +65,7 @@ Projeyi lokalde çalıştırabilmek için:
 
 ## Mcking Burger
 
-# Çıktı:
+# Link: [mcking-burger-online-furk2sahin.surge.sh](http://mcking-burger-online-furk2sahin.surge.sh)
 ![](mcking-burger-online-furk2sahin/public/output.gif)
 
 Bu ödevde online hamburger siparişi verebileceğimiz bir sistem yapacağız.
