@@ -2,6 +2,8 @@
 
 ## Film Listesi
 
+![](outputs/output.gif)
+
 Component kavramını daha iyi anlayabilmek için bir film listesi yapabilirsiniz.
 Listeleme işlemi için gerekli veri projeye eklendi(movies.js).
 

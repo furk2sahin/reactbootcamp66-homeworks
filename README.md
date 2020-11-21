@@ -1,6 +1,72 @@
-# Mcking Burger
+# 2.Hafta Ödevi
 
-![](public/output.gif)
+## Film Listesi
+
+# Link: [film-listesi-odevi-furk2sahin.surge.sh](http://film-listesi-odevi-furk2sahin.surge.sh)
+![](film-listesi-odevi-furk2sahin/outputs/output.gif)
+
+Component kavramını daha iyi anlayabilmek için bir film listesi yapabilirsiniz.
+Listeleme işlemi için gerekli veri projeye eklendi(movies.js).
+
+```js
+App.js
+
+import movies from './movies';
+```
+
+
+### Veri Önizlenimi
+
+```js
+ {
+    id: 1,
+    title: 'Pursuit of Happyness, The',
+    description: 'Drama',
+  },
+  {
+    id: 2,
+    title: "Alabama Moon",
+    description: "Adventure|Children|Drama"
+  },
+```
+
+**Not:** Veriler [https://www.mockaroo.com](https://www.mockaroo.com) yardımıyla üretilmiştir.
+
+
+# 3.Hafta Ödevi
+
+## Tic Tac Toe Oyunu
+
+#  Link: [tic-tac-toe-oyunu-furk2sahin.surge.sh](http://tic-tac-toe-oyunu-furk2sahin.surge.sh)
+![](tic-tac-toe-oyunu-furk2sahin/outputs/output.gif)
+
+2 kişinin oynayabileceği bir Tic Tac Toe oyunu yapmanızı bekliyoruz. Tasarımı size kalmakla birlikte referans olması açısından bir görsel ekledik.
+
+### Oyun Akışı
+- Kullanıcı hamlelerinden birisi "X" ile ifade edilirken, diğeri "O" ile ifade edilecek.
+- Tıklama aksiyonunda sıralamaya göre "X" veya "O" ekleme işlemi yapılacak.
+- Dikey, yatay veya çapraz olarak aynı tipteki ikonları sıralayabilen oyuncu oyunu kazanır.
+- Kazanma, kaybetme ve beraberlik durumlarında sonuç ekranda gösterilecek. 
+
+Detaylı oyun kuralları için [tıklayabilirsiniz](https://www.exploratorium.edu/brain_explorer/tictactoe.html). 
+
+![tic-tac-toe-reference-image](tic-tac-toe-oyunu-furk2sahin/image/tic-tac-toe-reference.jpg)
+
+## Kurulum
+
+Projeyi lokalde çalıştırabilmek için: 
+
+* Repo'yu klonlayın `git clone https://github.com/ReactBootcamp66/tic-tac-toe-odevi.git`
+* Komutu çalıştırın `cd tic-tac-toe`
+* Komutu çalıştırın `npm install` veya `yarn install`
+* Komutu çalıştırın `npm start` veya `yarn install` 
+
+# 4.Hafta Ödevi
+
+## Mcking Burger
+
+# Link: [mcking-burger-online-furk2sahin.surge.sh](http://mcking-burger-online-furk2sahin.surge.sh)
+![](mcking-burger-online-furk2sahin/public/output.gif)
 
 Bu ödevde online hamburger siparişi verebileceğimiz bir sistem yapacağız.
 
@@ -118,12 +184,12 @@ const INGREDIENT_UNIT_PRICES = {
 
 ### Başlangıç Noktası
 
-![starting-point](images/starting-point.jpg)
+![starting-point](mcking-burger-online-furk2sahin/images/starting-point.jpg)
 
 ### Örnek-01
 
-![example-01](images/example-01.jpg)
+![example-01](mcking-burger-online-furk2sahin/images/example-01.jpg)
 
 ### Örnek-02
 
-![example-02](images/example-02.jpg)
+![example-02](mcking-burger-online-furk2sahin/images/example-02.jpg)
