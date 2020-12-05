@@ -253,9 +253,9 @@ Beklenilen özellikler;
 
 # Bitirme Ödevi
 
-## Live on
+# Live on
 
-[reactbootcamp66-furk2sahin-bitirme-odevi.vercel.app](https://reactbootcamp66-furk2sahin-bitirme-odevi.vercel.app)
+[reactbootcamp66-bitirme-odevi-furk2sahin.netlify.app](https://reactbootcamp66-bitirme-odevi-furk2sahin.netlify.app/login)
 
 ## Parking owner accounts:
 
@@ -313,7 +313,7 @@ Account4;
   username: employee4
   password: employee4
 
-## Sunum
+# Sunum
 [gitbook.io/parking-sunum/](https://2017123057.gitbook.io/parking-sunum/)
 
 Bu ödevde aşağıda belirtilen kriterleri karşılayan ve içerik konusunda serbest olduğunuz bir uygulama yapmanız isteniyor.
