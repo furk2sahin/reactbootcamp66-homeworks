@@ -4,7 +4,7 @@ import { createBlacklistItem, deleteEntranceExitLog, deleteReportListItem, delet
 import DateFormatter from '../../DateFormatter/DateFormatter'
 import { WordBreaker } from '../../WelcomeCard/Welcome.styles'
 
-const ParkingOwnerReportCard = ({ content, vehicles, parkings, employees, updateReports, allLogs, parkAreas, allReports }) => {
+const ParkingOwnerReportCard = ({ content, vehicles, parkings, employees, updateReports, parkAreas }) => {
     const [rejectLoading, setRejectLoading] = useState(false);
     const [blacklistLoading, setBlacklistLoading] = useState(false);
 
@@ -12,7 +12,7 @@ const ParkingOwnerReportCard = ({ content, vehicles, parkings, employees, update
     const rejectOnClickHandle = async (event) => {
         setRejectLoading(true);
         try {
-            await updateReportListItem(content.id, { ...content, is_active: false })
+            await updateReportListItem(content.id, { active: false })
             updateReports();
         } catch (err) {
 
@@ -23,27 +23,18 @@ const ParkingOwnerReportCard = ({ content, vehicles, parkings, employees, update
     const addBlacklistOnClickHandle = async (event) => {
         setBlacklistLoading(true);
         try {
-            await deleteVehicle(Number(content.vehicle_id));
-            const reports = allReports.filter((report) => Number(report.vehicle_id) === Number(content.vehicle_id));
-            for (var j = 0; j < reports.length; j++) {
-                await deleteReportListItem(Number(reports[j].id));
-            }
 
-            if (parkAreas.some((area) => Number(area.vehicle_id) === Number(content.vehicle_id) && area.is_full)) {
-                const area = parkAreas.find((area) => Number(area.vehicle_id) === Number(content.vehicle_id) && area.is_full);
-                await updateParkArea(Number(area.id), { ...area, vehicle_id: 0, is_full: false })
+            await deleteVehicle(Number(content.vehicleId));
+            await deleteReportListItem(Number(content.vehicleId));
+            await deleteEntranceExitLog(Number(content.vehicleId));
+            if (parkAreas.some((area) => Number(area.vehicleId) === Number(content.vehicleId) && area.full)) {
+                const areaToUpdate = parkAreas.find((area) => Number(area.vehicleId) === Number(content.vehicleId) && area.full)
+                await updateParkArea(Number(areaToUpdate.id), { vehicleId: 0, full: false })
             }
-
             await createBlacklistItem({
-                date: new Date(),
-                parking_id: Number(content.parking_id),
-                license_plate: vehicles.find((vehicle) => Number(vehicle.id) === Number(content.vehicle_id)).license_plate
+                parkingId: Number(content.parkingId),
+                licensePlate: vehicles.find((vehicle) => Number(vehicle.id) === Number(content.vehicleId)).licensePlate
             })
-
-            const logs = allLogs.filter((log) => Number(log.vehicle_id) === Number(content.vehicle_id));
-            for (var i = 0; i < logs.length; i++) {
-                await deleteEntranceExitLog(Number(logs[i].id))
-            }
         } catch (err) {
             console.log(err.toString());
         }
@@ -54,12 +45,12 @@ const ParkingOwnerReportCard = ({ content, vehicles, parkings, employees, update
     return (
         <Card>
             <Card.Content >
-                <Card.Header textAlign="center">{vehicles.find((vehicle) => vehicle.id.toString() === content.vehicle_id.toString()).license_plate}</Card.Header>
+                <Card.Header textAlign="center">{vehicles.find((vehicle) => Number(vehicle.id) === Number(content.vehicleId)).licensePlate}</Card.Header>
                 <Divider />
                 <Card.Description textAlign="center">
-                    <WordBreaker>Parking name : <strong>{parkings.find((parking) => parking.id.toString() === content.parking_id.toString()).name}</strong></WordBreaker>
-                    <WordBreaker>Reported By : <strong>{employees.find((employee) => employee.id.toString() === content.employee_id.toString()).full_name}</strong></WordBreaker>
-                    <WordBreaker>Report Reason : <strong style={{ color: "red" }} >{content.report_reason}</strong></WordBreaker>
+                    <WordBreaker>Parking name : <strong>{parkings.find((parking) => Number(parking.id) === Number(content.parkingId)).name}</strong></WordBreaker>
+                    <WordBreaker>Reported By : <strong>{employees.find((employee) => Number(employee.id) === Number(content.employeeId)).fullName}</strong></WordBreaker>
+                    <WordBreaker>Report Reason : <strong style={{ color: "red" }} >{content.reportReason}</strong></WordBreaker>
                     <WordBreaker>Report Time <br />
                         <DateFormatter date={new Date(content.date)} />
                     </WordBreaker>

@@ -3,7 +3,7 @@ import { MoonLoader } from 'react-spinners';
 import { Grid, Message, Ref, Sticky, Visibility } from 'semantic-ui-react';
 import Contents from '../../components/Contents/Contents';
 import Header from '../../components/Header/Header'
-import { menuItems } from '../../components/MenuItems/MenuItems'
+import { menuItems } from '../../MenuItems'
 import SearchBar from '../../components/SearchBar/SearchBar';
 import WelcomeCard from '../../components/WelcomeCard/WelcomeCard';
 import SessionContext from '../../contexts/SessionContext';
@@ -26,15 +26,16 @@ const EmployeePage = () => {
 
     const handleHeaderOnClick = (event, { name }) => {
         setActiveMenu(name);
+        setError("");
     }
 
-    const handleReportSearchOnChange = (event) => {
+    const handleSearhOnChange = (event) => {
         setUserInput(event.target.value);
     }
 
-    const handleLogSearchOnChange = (event) => {
-        setUserInput(event.target.value);
-    }
+    useEffect(() => {
+        setUserInput("");
+    }, [activeMenu])
 
     const updateReports = async () => {
         try {
@@ -46,67 +47,66 @@ const EmployeePage = () => {
     }
 
     useEffect(() => {
-        setUserInput("");
-    }, [activeMenu])
-
-    useEffect(() => {
         const init = async () => {
             setLoading(true);
-            try {
-                let { data } = await getParkAreas();
-                data.filter((parkArea) => parkArea.parking_id.toString() === user.parking_id.toString());
-                setParkAreas(data);
-            } catch (err) {
-                setError(err);
-            }
             try {
                 const { data } = await getVehicles();
                 setVehicles(data);
             } catch (err) {
                 setError(err);
             }
-            try {
-                const { data } = await getReportList();
-                setReports(data);
-            } catch (err) {
-                setError(err);
-            }
+
             try {
                 const { data } = await getParkings();
                 setParkings(data);
             } catch (err) {
                 setError(err);
             }
-            try {
-                const { data } = await getEntranceExitLogs();
-                setLogs(data);
-            } catch (err) {
-                setError(err);
+
+            if (activeMenu === "Report A Car") {
+                try {
+                    let { data } = await getParkAreas();
+                    data.filter((parkArea) => Number(parkArea.parkingId) === Number(user.parkingId));
+                    setParkAreas(data);
+                } catch (err) {
+                    setError(err);
+                }
+
+                try {
+                    const { data } = await getReportList();
+                    setReports(data);
+                } catch (err) {
+                    setError(err);
+                }
+            } else if (activeMenu === "Entrance Exit Log") {
+                try {
+                    const { data } = await getEntranceExitLogs();
+                    setLogs(data);
+                } catch (err) {
+                    setError(err);
+                }
             }
             setLoading(false);
         }
         init();
-    }, [user.parking_id])
+    }, [activeMenu, user.parkingId])
 
     const person = {
-        fullname: user.full_name,
+        fullname: user.fullName,
         phone: "0" + user.phone,
-        registrationDate: new Date(user.starting_date),
+        registrationDate: new Date(user.startingDate),
     }
 
     const getFilteredCars = () => {
-        const filteredVehicles = vehicles.filter((vehicle) => vehicle.license_plate.toLowerCase().indexOf(userInput.toLowerCase()) !== -1 && Number(vehicle.parking_id) === Number(user.parking_id))
-            .map((vehicle) => vehicle.id);
-        if (filteredVehicles.length === vehicles.length)
-            return parkAreas.filter((area) => filteredVehicles.includes(area.vehicle_id.toString()));
-        else
-            return parkAreas.filter((area) => filteredVehicles.includes(area.vehicle_id.toString()) && area.is_full);
+        const filteredVehicles = vehicles.filter((vehicle) => vehicle.licensePlate.toLowerCase().indexOf(userInput.toLowerCase()) !== -1 && Number(vehicle.parkingId) === Number(user.parkingId))
+            .map((vehicle) => Number(vehicle.id));
+        return parkAreas.filter((area) => filteredVehicles.includes(Number(area.vehicleId)) && area.full);
     }
 
     const getFilteredLogs = () => {
-        const filteredVehicles = vehicles.filter((vehicle) => vehicle.license_plate.toLowerCase().indexOf(userInput.toLowerCase()) !== -1 && Number(vehicle.parking_id) === Number(user.parking_id))
-            .map((vehicle) => vehicle.id.toString());
-        return logs.filter((log) => filteredVehicles.includes(log.vehicle_id.toString()));
+        const filteredVehicles = vehicles.filter((vehicle) => vehicle.licensePlate.toLowerCase().indexOf(userInput.toLowerCase()) !== -1 && Number(vehicle.parkingId) === Number(user.parkingId))
+            .map((vehicle) => Number(vehicle.id));
+        return logs.filter((log) => filteredVehicles.includes(Number(log.vehicleId)));
     }
 
     return (
@@ -121,12 +121,12 @@ const EmployeePage = () => {
                                 getFilteredCars().length === 0 && userInput === "" ?
                                     <Message negative header="There is car in park areas." />
                                     :
-                                    <SearchBar userInput={userInput} onChange={handleReportSearchOnChange} placeholder="Search by license plate..." />
+                                    <SearchBar userInput={userInput} onChange={handleSearhOnChange} placeholder="Search by license plate..." />
                                 : activeMenu === "Entrance Exit Log" ?
                                     getFilteredLogs().length === 0 && userInput === "" ?
                                         <Message negative header="There is no log." />
                                         :
-                                        <SearchBar userInput={userInput} onChange={handleLogSearchOnChange} placeholder="Search by license plate..." />
+                                        <SearchBar userInput={userInput} onChange={handleSearhOnChange} placeholder="Search by license plate..." />
                                     : null
                             : null
                         }
@@ -135,7 +135,7 @@ const EmployeePage = () => {
                 </Sticky>
 
                 <Ref innerRef={contextRef}>
-                    <Grid>
+                    <Grid stackable>
                         <Grid.Column width="13">
                             {loading && !error ?
                                 <div style={{ marginLeft: "50%" }}>

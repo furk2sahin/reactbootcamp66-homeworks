@@ -21,7 +21,7 @@ const BlacklistCard = ({ content, updateBlacklist }) => {
     return (
         <Card>
             <Card.Content >
-                <Card.Header textAlign="center">{content.license_plate}</Card.Header>
+                <Card.Header textAlign="center">{content.licensePlate}</Card.Header>
                 <Divider />
                 <Card.Description textAlign="center">
                     <WordBreaker>Block Time <br />

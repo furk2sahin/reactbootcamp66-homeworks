@@ -4,6 +4,7 @@ import {
     Button,
     Checkbox,
     Form,
+    Grid,
     Icon,
     Message,
     Modal,
@@ -41,14 +42,16 @@ const Register = () => {
     const [successErrorModalOpen, setSuccessErrorModalOpen] = useState(false);
     const [error, setError] = useState("");
     const [parkings, setParkings] = useState([]);
+    const [parkingOptions, setParkingOptions] = useState([]);
 
     useEffect(() => {
         setParkingLoading(true);
         const init = async () => {
             try {
                 let { data } = await getParkings();
-                data = data.map((parking, index) => { return { key: index, text: parking.name, value: parking.name, ...parking } })
                 setParkings(data);
+                data = data.map((parking, index) => { return { key: index, text: parking.name, value: parking.name } })
+                setParkingOptions(data);
                 setParkingLoading(false);
             } catch (err) {
                 setError(err);
@@ -78,31 +81,6 @@ const Register = () => {
         }
         init();
     }, [])
-
-    const updateAccounts = async () => {
-        setCreateLoading(true);
-        try {
-            const { data } = await getUsers();
-            setUsers(data);
-        } catch (err) {
-            setError(err);
-        }
-
-        try {
-            const { data } = await getEmployees();
-            setEmployees(data);
-        } catch (err) {
-            setError(err);
-        }
-
-        try {
-            const { data } = await getParkingOwners();
-            setParkingOwners(data);
-        } catch (err) {
-            setError(err);
-        }
-        setCreateLoading(false);
-    }
 
     const handleFirstNameChange = (event, { value }) => {
         if ((/^[a-zA-Z]+$/.test(value) || value === '') && value.length < 25) {
@@ -153,7 +131,7 @@ const Register = () => {
         setChecked(!isChecked)
     }
 
-    const onClickHandler = (event) => {
+    const onClickHandler = () => {
         if (firstName.length < 3)
             setFirstNameError(true);
         else if (lastName.length < 3)
@@ -167,9 +145,9 @@ const Register = () => {
         else if (selectedParking === '')
             setParkingError(true);
         else {
-            if (users.some((user) => user.user_name.toLowerCase() === userName.toLowerCase()) ||
-                employees.some((employee) => employee.user_name.toLowerCase() === userName.toLowerCase()) ||
-                parkingOwners.some((parkingOwner) => parkingOwner.user_name.toLowerCase() === userName.toLowerCase())) {
+            if (users.some((user) => user.userName.toLowerCase() === userName.toLowerCase()) ||
+                employees.some((employee) => employee.userName.toLowerCase() === userName.toLowerCase()) ||
+                parkingOwners.some((parkingOwner) => parkingOwner.userName.toLowerCase() === userName.toLowerCase())) {
                 setAlreadyTaken("Username");
                 setSuccessErrorModalOpen(true);
             } else if (users.some((user) => user.phone === phone) ||
@@ -185,14 +163,14 @@ const Register = () => {
 
     const modalOKButtonHandler = async () => {
         let createPerson = {
-            parking_id: parkings.find((parking) => parking.name === selectedParking).id,
-            full_name: `${firstName} ${lastName}`,
-            user_name: userName,
+            parkingId: parkings.find((parking) => parking.name === selectedParking).id,
+            fullName: `${firstName} ${lastName}`,
+            userName: userName,
             password: password,
             phone: phone
         };
         if (isChecked) {
-            createPerson = { starting_date: "date", is_accepted: false, ...createPerson };
+            createPerson = { accepted: false, ...createPerson };
             try {
                 setCreateLoading(true);
                 await createEmployee(createPerson);
@@ -201,7 +179,7 @@ const Register = () => {
             }
         } else {
             try {
-                await createUser({ registration_date: new Date(), ...createPerson });
+                await createUser(createPerson);
                 setCreateLoading(false);
             } catch (err) {
                 setError(err);
@@ -209,7 +187,6 @@ const Register = () => {
         }
         setModalOpen(false);
         setSuccessErrorModalOpen(true);
-        updateAccounts();
         setFirstName('');
         setLastName('');
         setPhone('');
@@ -228,161 +205,167 @@ const Register = () => {
     return (
         <>
             <Logo />
-            <Title>Create your account</Title>
-            <Wrapper>
-                <Modal
-                    dimmer="blurring"
-                    open={successErrorModalOpen}
-                    onClose={() => setSuccessErrorModalOpen(false)}
-                >
-                    <Modal.Content>
-                        <Message negative={!success} positive={success} header={
-                            success ? "Your account created successfully. You'll be redirect to login page in 3 seconds."
-                                : alreadyTaken === "Username" ? "This Username is already in use"
-                                    : alreadyTaken === "Phone" ? "This Phone is already in use"
-                                        : null
-                        } />
-                    </Modal.Content>
-                    <Modal.Actions>
-                        {alreadyTaken === "Username" || alreadyTaken === "Phone" ?
-                            <Button negative onClick={() => setSuccessErrorModalOpen(false)}>
-                                OK!
+            <Grid stackable>
+                <Grid.Column width="16">
+                    <Title>Create your account</Title>
+                </Grid.Column>
+                <Grid.Column width="16">
+                    <Wrapper>
+                        <Modal
+                            dimmer="blurring"
+                            open={successErrorModalOpen}
+                            onClose={() => setSuccessErrorModalOpen(false)}
+                        >
+                            <Modal.Content>
+                                <Message negative={!success} positive={success} header={
+                                    success ? "Your account created successfully. You'll be redirect to login page in 3 seconds."
+                                        : alreadyTaken === "Username" ? "This Username is already in use"
+                                            : alreadyTaken === "Phone" ? "This Phone is already in use"
+                                                : null
+                                } />
+                            </Modal.Content>
+                            <Modal.Actions>
+                                {alreadyTaken === "Username" || alreadyTaken === "Phone" ?
+                                    <Button negative onClick={() => setSuccessErrorModalOpen(false)}>
+                                        OK!
                                 </Button>
-                            : null
-                        }
-                    </Modal.Actions>
-                </Modal>
+                                    : null
+                                }
+                            </Modal.Actions>
+                        </Modal>
 
-                {parkingLoading ?
-                    <Placeholder>
-                        <Placeholder.Line />
-                        <Placeholder.Line />
-                        <Placeholder.Line />
-                        <Placeholder.Line />
-                        <Placeholder.Line />
-                        <Placeholder.Line />
-                    </Placeholder>
-                    : parkings.length === 0 && !error ?
-                        <Message negative header="There is no parking. You can't register." />
-                        : error ?
-                            <Message negative>{error.toString()}</Message>
-                            :
-                            <>
-                                <Form size="big">
-                                    <Form.Group widths="equal">
-                                        <Form.Input
-                                            onChange={handleFirstNameChange}
-                                            value={firstName}
-                                            required
-                                            fluid
-                                            label="First name"
-                                            placeholder="First name (between 2-24 letter)"
-                                            error={firstNameError}
-                                        />
-                                        <Form.Input
-                                            onChange={handleLastNameChange}
-                                            value={lastName}
-                                            required
-                                            fluid
-                                            label="Last name"
-                                            placeholder="Last name (between 2-24 letter)"
-                                            error={lastNameError}
-                                        />
-                                    </Form.Group>
-                                    <Form.Input
-                                        onChange={handlePhoneChange}
-                                        value={phone}
-                                        required
-                                        label="Phone"
-                                        placeholder="Phone (Length should be 10)"
-                                        error={phoneError}
-                                    />
-                                    <Form.Input
-                                        onChange={handleUserNameChange}
-                                        value={userName}
-                                        required
-                                        label="Username"
-                                        placeholder="Username (between 5-24 letter)"
-                                        error={userNameError}
-                                    />
-                                    <Form.Input
-                                        onChange={handlePasswordChange}
-                                        value={password}
-                                        required
-                                        label="Password"
-                                        placeholder="Password (between 5-24 letter)"
-                                        type="password"
-                                        error={passwordError}
-                                    />
-                                    <Form.Field
-                                        loading={parkingLoading}
-                                        value={selectedParking}
-                                        onChange={dropdownOnChangeHandler}
-                                        required
-                                        control={Select}
-                                        options={parkings}
-                                        label="Choose Parking"
-                                        placeholder='Choose Parking'
-                                        search
-                                        error={parkingError}
-                                    />
-                                    <Form.Field>
-                                        <Checkbox slider label='Do you want to work in this parking?' onChange={checkboxOnChange} checked={isChecked} />
-                                    </Form.Field>
-                                    <Button
-                                        loading={createLoading}
-                                        animated
-                                        fluid
-                                        primary
-                                        disabled={firstNameError || lastNameError || phoneError || userNameError || passwordError || parkingError ? true : false}
-                                        onClick={onClickHandler}
-                                    >
-                                        <Button.Content visible>
-                                            Sign in
+                        {parkingLoading ?
+                            <Placeholder>
+                                <Placeholder.Line />
+                                <Placeholder.Line />
+                                <Placeholder.Line />
+                                <Placeholder.Line />
+                                <Placeholder.Line />
+                                <Placeholder.Line />
+                            </Placeholder>
+                            : parkings.length === 0 && !error ?
+                                <Message negative header="There is no parking. You can't register." />
+                                : error ?
+                                    <Message negative>{error.toString()}</Message>
+                                    :
+                                    <>
+                                        <Form size="big">
+                                            <Form.Group widths="equal">
+                                                <Form.Input
+                                                    onChange={handleFirstNameChange}
+                                                    value={firstName}
+                                                    required
+                                                    fluid
+                                                    label="First name"
+                                                    placeholder="First name (between 2-24 letter)"
+                                                    error={firstNameError}
+                                                />
+                                                <Form.Input
+                                                    onChange={handleLastNameChange}
+                                                    value={lastName}
+                                                    required
+                                                    fluid
+                                                    label="Last name"
+                                                    placeholder="Last name (between 2-24 letter)"
+                                                    error={lastNameError}
+                                                />
+                                            </Form.Group>
+                                            <Form.Input
+                                                onChange={handlePhoneChange}
+                                                value={phone}
+                                                required
+                                                label="Phone"
+                                                placeholder="Phone (Length should be 10)"
+                                                error={phoneError}
+                                            />
+                                            <Form.Input
+                                                onChange={handleUserNameChange}
+                                                value={userName}
+                                                required
+                                                label="Username"
+                                                placeholder="Username (between 5-24 letter)"
+                                                error={userNameError}
+                                            />
+                                            <Form.Input
+                                                onChange={handlePasswordChange}
+                                                value={password}
+                                                required
+                                                label="Password"
+                                                placeholder="Password (between 5-24 letter)"
+                                                type="password"
+                                                error={passwordError}
+                                            />
+                                            <Form.Field
+                                                fluid
+                                                loading={parkingLoading}
+                                                value={selectedParking}
+                                                onChange={dropdownOnChangeHandler}
+                                                required
+                                                control={Select}
+                                                options={parkingOptions}
+                                                label="Choose Parking"
+                                                placeholder='Choose Parking'
+                                                search
+                                                error={parkingError}
+                                            />
+                                            <Form.Field>
+                                                <Checkbox slider label='Do you want to work in this parking?' onChange={checkboxOnChange} checked={isChecked} />
+                                            </Form.Field>
+                                            <Button
+                                                loading={createLoading}
+                                                animated
+                                                fluid
+                                                primary
+                                                disabled={firstNameError || lastNameError || phoneError || userNameError || passwordError || parkingError ? true : false}
+                                                onClick={onClickHandler}
+                                            >
+                                                <Button.Content visible>
+                                                    Sign in
                                 </Button.Content>
-                                        <Button.Content hidden>
-                                            <Icon name="signup" />
-                                        </Button.Content>
-                                    </Button>
-                                </Form>
-                                <br />
-                                <Modal
-                                    dimmer="blurring"
-                                    open={modalOpen}
-                                    onClose={() => setModalOpen(false)}
-                                >
-                                    <Modal.Header>Are you sure the information is correct?</Modal.Header>
-                                    <Modal.Content>
-                                        <h3>
-                                            First name: <i style={{ color: "red" }}>{firstName}</i><br />
+                                                <Button.Content hidden>
+                                                    <Icon name="signup" />
+                                                </Button.Content>
+                                            </Button>
+                                        </Form>
+                                        <Modal
+                                            dimmer="blurring"
+                                            open={modalOpen}
+                                            onClose={() => setModalOpen(false)}
+                                        >
+                                            <Modal.Header>Are you sure the information is correct?</Modal.Header>
+                                            <Modal.Content>
+                                                <h3>
+                                                    First name: <i style={{ color: "red" }}>{firstName}</i><br />
                                             Last name: <i style={{ color: "red" }}>{lastName}</i><br />
                                             Phone: <i style={{ color: "red" }}>{phone}</i><br />
                                             Username: <i style={{ color: "red" }}>{userName}</i><br />
                                             Selected Parking: <i style={{ color: "red" }}>{selectedParking}</i><br />
                                             User Type: <i style={{ color: "red" }}>{isChecked ? "Employee" : "User"}</i>
-                                        </h3>
-                                    </Modal.Content>
-                                    <Modal.Actions>
-                                        <Button negative onClick={() => setModalOpen(false)}>
-                                            Nope, something wrong!
+                                                </h3>
+                                            </Modal.Content>
+                                            <Modal.Actions>
+                                                <Button negative onClick={() => setModalOpen(false)}>
+                                                    Nope, something wrong!
                                     </Button>
-                                        <Button positive onClick={modalOKButtonHandler}>
-                                            All fine.
+                                                <Button positive onClick={modalOKButtonHandler}>
+                                                    All fine.
                                     </Button>
-                                    </Modal.Actions>
-                                </Modal>
-                            </>
-                }
-                {
-                    !error ?
-                        <Message warning>
-                            <Icon name='user' />
+                                            </Modal.Actions>
+                                        </Modal>
+                                    </>
+                        }
+                        {
+                            !error ?
+                                <Message warning>
+                                    <Icon name='user' />
                             Already have an account?&nbsp;<a href='/login'>Login here</a>&nbsp;instead.
                         </Message>
-                        :
-                        null
-                }
-            </Wrapper>
+                                :
+                                null
+                        }
+                    </Wrapper>
+                </Grid.Column>
+            </Grid>
         </>
     )
 }

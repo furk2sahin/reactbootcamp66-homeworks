@@ -22,20 +22,18 @@ const Contents = ({
     setListLogs,
     setListReports,
     employees,
-    allVehicles,
     setCarError,
     selectedCar,
     allLogs,
     reports,
     updateReports,
-    allReports,
     blacklist,
     updateEmployees,
     users,
     updateBlacklist
 }) => {
     return (
-        <Grid >
+        <Grid stackable>
             {
                 contents.map((content, index) =>
                     <Grid.Column width="4" key={index}>
@@ -66,14 +64,14 @@ const Contents = ({
                                         />
                                         : getContent === 'ParkAreaCard' ?
                                             <ParkAreaCard
-                                                allLogs={allLogs}
                                                 content={content}
+                                                allLogs={allLogs}
                                                 selectedCar={selectedCar}
                                                 vehicles={vehicles}
-                                                allVehicles={allVehicles}
                                                 updateVehicles={updateVehicles}
                                                 index={index}
-                                                setCarError={setCarError} />
+                                                setCarError={setCarError}
+                                            />
                                             : getContent === 'ParkingOwnerReportCard' ?
                                                 <ParkingOwnerReportCard
                                                     content={content}
@@ -81,25 +79,23 @@ const Contents = ({
                                                     parkings={parkings}
                                                     employees={employees}
                                                     updateReports={updateReports}
-                                                    allLogs={allLogs}
                                                     parkAreas={parkAreas}
-                                                    allReports={allReports} />
+                                                />
                                                 : getContent === 'ParkingOwnerVehicleCard' ?
                                                     <ParkingOwnerVehicleCard
+                                                        content={content}
                                                         parkings={parkings}
                                                         users={users}
-                                                        content={content} />
+                                                    />
                                                     : getContent === 'UserVehicleCard' ?
                                                         <UserVehicleCard
-                                                            parkAreas={parkAreas}
                                                             content={content}
-                                                            allLogs={allLogs}
+                                                            parkAreas={parkAreas}
                                                             parkings={parkings}
                                                             updateVehicles={updateVehicles}
                                                             setListedVehicleId={setListedVehicleId}
                                                             setListLogs={setListLogs}
                                                             setListReports={setListReports}
-                                                            allReports={allReports}
                                                         />
                                                         : getContent === 'UserVehicleReportCard' ?
                                                             <UserVehicleReportCard

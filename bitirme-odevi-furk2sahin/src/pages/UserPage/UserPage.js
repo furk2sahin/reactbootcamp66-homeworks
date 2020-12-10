@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Button, Form, Grid, Icon, Message, Ref, Select, Sticky, Visibility } from 'semantic-ui-react'
 import Contents from '../../components/Contents/Contents'
 import Header from '../../components/Header/Header'
-import { menuItems } from '../../components/MenuItems/MenuItems'
+import { menuItems } from '../../MenuItems'
 import SearchBar from '../../components/SearchBar/SearchBar'
 import WelcomeCard from '../../components/WelcomeCard/WelcomeCard'
 import SessionContext from '../../contexts/SessionContext'
@@ -25,7 +25,6 @@ const UserPage = () => {
     const [allLogs, setAllLogs] = useState([]);
     const [listReports, setListReports] = useState(false);
     const [vehicleReports, setVehicleReports] = useState([]);
-    const [allReports, setAllReports] = useState([]);
     const [listedVehicleId, setListedVehicleId] = useState(0);
     const [currentParkId, setCurrentParkId] = useState(0);
     const [loading, setLoading] = useState(false);
@@ -38,16 +37,153 @@ const UserPage = () => {
     const [carOptions, setCarOptions] = useState([]);
     const contextRef = React.createRef();
 
-    const date = new Date(user.registration_date);
+    useEffect(() => {
+        const init = async () => {
+
+            setLoading(true);
+            try {
+                let { data } = await getVehicles();
+                setAllVehicles(data);
+                data = data.filter((vehicle) => Number(user.id) === Number(vehicle.userId));
+                setVehicles(data);
+            } catch (err) {
+                setError(err);
+            }
+
+            try {
+                const { data } = await getParkings();
+                setParkings(data);
+                setSelectedParking(data[0].name);
+            } catch (err) {
+                setError(err);
+            }
+
+            try {
+                const { data } = await getBlacklist();
+                setBlacklist(data);
+            } catch (err) {
+                setError(err);
+            }
+            setLoading(false);
+        }
+        init();
+    }, [user.id])
+
+    useEffect(() => {
+        setSelectedCar('');
+        const fullAreaVehicles = parkAreas.filter((area) => area.full)
+            .map((area) => Number(area.vehicleId))
+        setCarOptions(vehicles.filter((vehicle) => Number(vehicle.userId) === Number(user.id) && !fullAreaVehicles.includes(Number(vehicle.id)))
+            .map((vehicle) => ({ text: vehicle.licensePlate, value: vehicle.licensePlate })))
+    }, [parkAreas, vehicles, user.id])
+
+    useEffect(() => {
+        const getParkAreasBySelectedCar = () => {
+            if (selectedCar !== "" && parkings.length !== 0 && parkAreas.length !== 0) {
+                const parkingId = parkings.find((parking) => Number(parking.id) === Number(allVehicles.find(vehicle => vehicle.licensePlate === selectedCar).parkingId)).id;
+                setCurrentParkId(Number(parkingId));
+                setSelectedParkingParkAreas(parkAreas.filter((area) => Number(area.parkingId) === Number(parkingId)));
+                setPlaceholder(parkings.find(parking => Number(parking.id) === Number(parkingId)).name);
+                setSelectedParking("");
+            }
+        }
+        getParkAreasBySelectedCar();
+    }, [selectedCar, parkAreas, allVehicles, parkings])
+
+    useEffect(() => {
+        const getParkAreasBySelectedParking = () => {
+            if (selectedParking !== "" && parkings.length !== 0 && parkAreas.length !== 0) {
+                const parkingId = parkings.find((parking) => parking.name === selectedParking).id;
+                setCurrentParkId(Number(parkingId));
+                setSelectedParkingParkAreas(parkAreas.filter((area) => Number(area.parkingId) === Number(parkingId)));
+                setSelectedCar("");
+            }
+        }
+        getParkAreasBySelectedParking();
+    }, [selectedParking, parkAreas, parkings])
+
+    useEffect(() => {
+        const getListedVehicleLogs = async () => {
+            setLoading(true);
+            try {
+                let { data } = await getEntranceExitLogs();
+                setAllLogs(data);
+                data = data.filter((log) => Number(log.vehicleId) === Number(listedVehicleId));
+                setVehicleLogs(data);
+            } catch (err) {
+                setError(err);
+            }
+            setLoading(false);
+        }
+        const getListedVehicleReports = async () => {
+            setLoading(true);
+            try {
+                let { data } = await getReportList();
+                data = data.filter((report) => Number(report.vehicleId) === Number(listedVehicleId));
+                setVehicleReports(data);
+            } catch (err) {
+                setError(err);
+            }
+
+            try {
+                const { data } = await getEmployees();
+                setEmployees(data);
+            } catch (err) {
+                setError(err);
+            }
+            setLoading(false);
+        }
+        if (listLogs)
+            getListedVehicleLogs();
+        else if (listReports)
+            getListedVehicleReports();
+    }, [listLogs, listReports, listedVehicleId])
+
+    useEffect(() => {
+        const update = async () => {
+            setLoading(true);
+            if (activeMenu === "Your Vehicles") {
+                try {
+                    let { data } = await getVehicles();
+                    data = data.filter((vehicle) => Number(user.id) === Number(vehicle.userId));
+                    setVehicles(data);
+                } catch (err) {
+                    setError(err);
+                }
+            } else if (activeMenu === "Park Your Car") {
+                try {
+                    const { data } = await getVehicles();
+                    setAllVehicles(data);
+                } catch (err) {
+                    setError(err);
+                }
+                try {
+                    const { data } = await getParkAreas();
+                    setSelectedParkingParkAreas(data.filter(area => Number(area.parkingId) === currentParkId));
+                    setParkAreas(data);
+                } catch (err) {
+                    setError(err);
+                }
+                try {
+                    const { data } = await getEntranceExitLogs();
+                    setAllLogs(data);
+                } catch (err) {
+                    setError(err)
+                }
+            }
+            setLoading(false);
+        }
+        update();
+    }, [activeMenu, currentParkId, user.id])
 
     const person = {
-        fullname: user.full_name,
+        fullname: user.fullName,
         phone: "0" + user.phone,
-        registrationDate: date,
+        registrationDate: new Date(user.registrationDate),
     }
 
     const getFilteredVehicles = () => {
-        return vehicles.filter((vehicle) => vehicle.license_plate.toLowerCase().indexOf(userInput.toLowerCase()) !== -1)
+        return vehicles.filter((vehicle) => vehicle.licensePlate.toLowerCase().indexOf(userInput.toLowerCase()) !== -1)
     }
 
     const handleOnChange = (event) => {
@@ -56,6 +192,9 @@ const UserPage = () => {
 
     const handleHeaderOnClick = (event, { name }) => {
         setActiveMenu(name);
+        setListLogs(false);
+        setListReports(false);
+        setError("");
     }
 
     const backOnClickHandler = () => {
@@ -78,24 +217,15 @@ const UserPage = () => {
             try {
                 let { data } = await getVehicles();
                 setAllVehicles(data);
-                data = data.filter((vehicle) => user.id.toString() === vehicle.user_id.toString());
+                data = data.filter((vehicle) => Number(user.id) === Number(vehicle.userId));
                 setVehicles(data);
             } catch (err) {
                 setError(err);
             }
-
-            if (listLogs) {
-                try {
-                    const { data } = await getEntranceExitLogs();
-                    setAllLogs(data);
-                } catch (err) {
-                    setError(err);
-                }
-            }
         } else if (activeMenu === "Park Your Car") {
             try {
                 const { data } = await getParkAreas();
-                setSelectedParkingParkAreas(data.filter(area => Number(area.parking_id) === currentParkId));
+                setSelectedParkingParkAreas(data.filter(area => Number(area.parkingId) === currentParkId));
                 setParkAreas(data);
             } catch (err) {
                 setError(err);
@@ -111,185 +241,13 @@ const UserPage = () => {
         setLoading(false);
     }
 
-    useEffect(() => {
-        const init = async () => {
-            setLoading(true);
-            try {
-                let { data } = await getVehicles();
-                data = data.filter((vehicle) => user.id === vehicle.user_id.toString());
-                setVehicles(data);
-            } catch (err) {
-                setError(err);
-            }
-
-            try {
-                let { data } = await getVehicles();
-                setAllVehicles(data);
-            } catch (err) {
-                setError(err);
-            }
-
-            try {
-                const { data } = await getParkings();
-                setSelectedParking(data[0].name);
-                setParkings(data);
-            } catch (err) {
-                setError(err);
-            }
-
-            try {
-                const { data } = await getParkAreas();
-                setParkAreas(data);
-            } catch (err) {
-                setError(err);
-            }
-
-            try {
-                const { data } = await getEntranceExitLogs();
-                setAllLogs(data);
-            } catch (err) {
-                setError(err);
-            }
-
-            try {
-                const { data } = await getEmployees();
-                setEmployees(data);
-            } catch (err) {
-                setError(err);
-            }
-
-            try {
-                const { data } = await getReportList();
-                setAllReports(data);
-            } catch (err) {
-                setError(err);
-            }
-
-            try {
-                const { data } = await getBlacklist();
-                setBlacklist(data);
-            } catch (err) {
-                setError(err);
-            }
-            setLoading(false);
-        }
-        init();
-    }, [user.id])
-
-    useEffect(() => {
-        setSelectedCar('');
-        const fullAreaVehicles = parkAreas.filter((area) => area.is_full)
-            .map((area) => area.vehicle_id)
-        setCarOptions(vehicles.filter((vehicle) => vehicle.user_id.toString() === user.id.toString() && !fullAreaVehicles.includes(vehicle.id.toString()))
-            .map((vehicle) => ({ text: vehicle.license_plate, value: vehicle.license_plate, ...vehicle })))
-    }, [parkAreas, vehicles, user.id])
-
-    useEffect(() => {
-        const getParkAreasBySelectedCar = () => {
-            if (selectedCar !== "" && parkings.length !== 0 && parkAreas.length !== 0) {
-                const parkingId = parkings.find((parking) => Number(parking.id) === Number(allVehicles.find(vehicle => vehicle.license_plate === selectedCar).parking_id)).id;
-                setCurrentParkId(Number(parkingId));
-                setSelectedParkingParkAreas(parkAreas.filter((area) => area.parking_id.toString() === parkingId.toString()));
-                setPlaceholder(parkings.find(parking => Number(parking.id) === Number(parkingId)).name);
-                setSelectedParking("");
-            }
-        }
-        getParkAreasBySelectedCar();
-    }, [selectedCar, parkAreas, allVehicles, parkings])
-
-    useEffect(() => {
-        const getParkAreasBySelectedParking = () => {
-            if (selectedParking !== "" && parkings.length !== 0 && parkAreas.length !== 0) {
-                const parkingId = parkings.find((parking) => parking.name === selectedParking).id;
-                setCurrentParkId(Number(parkingId));
-                setSelectedParkingParkAreas(parkAreas.filter((area) => area.parking_id.toString() === parkingId.toString()));
-                setSelectedCar("");
-            }
-        }
-        getParkAreasBySelectedParking();
-    }, [selectedParking, parkAreas, parkings])
-
-    useEffect(() => {
-        console.log(listLogs);
-        const getListedVehicleLogs = async () => {
-            setLoading(true);
-            try {
-                let { data } = await getEntranceExitLogs();
-                setAllLogs(data);
-                data = data.filter((log) => log.vehicle_id.toString() === listedVehicleId.toString());
-                setVehicleLogs(data);
-            } catch (err) {
-                setError(err);
-            }
-            setLoading(false);
-        }
-        const getListedVehicleReports = async () => {
-            setLoading(true);
-            try {
-                let { data } = await getReportList();
-                data = data.filter((report) => report.vehicle_id.toString() === listedVehicleId.toString());
-                setVehicleReports(data);
-            } catch (err) {
-                setError(err);
-            }
-            setLoading(false);
-        }
-        if (listLogs)
-            getListedVehicleLogs();
-        else if (listReports)
-            getListedVehicleReports();
-    }, [listLogs, listReports, listedVehicleId])
-
-    useEffect(() => {
-        const update = async () => {
-            setLoading(true);
-            if (activeMenu === "Your Vehicles") {
-                try {
-                    let { data } = await getVehicles();
-                    setAllVehicles(data);
-                    data = data.filter((vehicle) => user.id.toString() === vehicle.user_id.toString());
-                    setVehicles(data);
-                } catch (err) {
-                    setError(err);
-                }
-
-                if (listLogs) {
-                    try {
-                        const { data } = await getEntranceExitLogs();
-                        setAllLogs(data);
-                    } catch (err) {
-                        setError(err);
-                    }
-                }
-            } else if (activeMenu === "Park Your Car") {
-                setListLogs(false);
-                try {
-                    const { data } = await getParkAreas();
-                    setSelectedParkingParkAreas(data.filter(area => Number(area.parking_id) === currentParkId));
-                    setParkAreas(data);
-                } catch (err) {
-                    setError(err);
-                }
-                try {
-                    const { data } = await getEntranceExitLogs();
-                    setAllLogs(data);
-                } catch (err) {
-                    setError(err)
-                }
-            }
-            setListReports(false);
-            setLoading(false);
-        }
-        update();
-    }, [activeMenu, currentParkId, user.id, listLogs])
-
-    const parkingOptions = parkings.map((parking) => ({ text: parking.name, value: parking.name, ...parking }))
+    const parkingOptions = parkings.map((parking) => ({ text: parking.name, value: parking.name }))
     return (
         <>
             <Header menuItems={menuItems.user} activeMenu={activeMenu} handleHeaderOnClick={handleHeaderOnClick} />
             <Wrapper>
                 <Sticky context={contextRef}>
-                    <Grid centered>
+                    <Grid stackable centered>
                         {activeMenu === 'Your Vehicles' && !listLogs && !listReports ?
                             <SearchBar userInput={userInput} onChange={handleOnChange} placeholder="Search by license plate..." />
                             : activeMenu === 'Your Vehicles' && (listLogs || listReports) ?
@@ -335,7 +293,7 @@ const UserPage = () => {
                 </Sticky>
 
                 <Ref innerRef={contextRef}>
-                    <Grid>
+                    <Grid stackable>
                         <Grid.Column width="13">
                             {loading && !error ?
                                 <div style={{ marginLeft: "50%" }}>
@@ -361,25 +319,22 @@ const UserPage = () => {
                                                     />
                                                     :
                                                     <Contents
-                                                        allReports={allReports}
-                                                        parkAreas={parkAreas}
-                                                        allLogs={allLogs}
                                                         contents={getFilteredVehicles()}
-                                                        getContent="UserVehicleCard"
+                                                        parkAreas={parkAreas}
                                                         parkings={parkings}
                                                         updateVehicles={updateVehicles}
                                                         setListLogs={setListLogs}
                                                         setListReports={setListReports}
                                                         setListedVehicleId={setListedVehicleId}
                                                         blacklist={blacklist}
+                                                        getContent="UserVehicleCard"
                                                     />
                                             : activeMenu === "Park Your Car" ?
                                                 <Contents
-                                                    allLogs={allLogs}
                                                     contents={selectedParkingParkAreas}
+                                                    allLogs={allLogs}
                                                     selectedCar={selectedCar}
-                                                    allVehicles={allVehicles}
-                                                    vehicles={vehicles}
+                                                    vehicles={allVehicles}
                                                     updateVehicles={updateVehicles}
                                                     setCarError={setCarError}
                                                     getContent="ParkAreaCard"

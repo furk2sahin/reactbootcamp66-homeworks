@@ -11,8 +11,8 @@ const EmployeeReportCard = ({ content, vehicles, parkings, reports, updateReport
     const [success, setSuccess] = useState(false);
     const [reportLoading, setReportLoading] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
-    const license_plate = vehicles.find((vehicle) => vehicle.id.toString() === content.vehicle_id.toString()).license_plate;
-    const parkingName = parkings.find((parking) => parking.id.toString() === content.parking_id.toString()).name;
+    const licensePlate = vehicles.find((vehicle) => vehicle.id.toString() === content.vehicleId.toString()).licensePlate;
+    const parkingName = parkings.find((parking) => parking.id.toString() === content.parkingId.toString()).name;
 
     const handleReasonChange = (event, { value }) => {
         if ((/^[a-zA-Z0-9., ]+$/.test(value) || value === '') && value.length < 50) {
@@ -24,9 +24,9 @@ const EmployeeReportCard = ({ content, vehicles, parkings, reports, updateReport
     }
 
     const reportCarOnClickHandle = async () => {
-        if (!/^[., ]+$/.test(reason) && !(reason.trim().replace(/\s\s+/g, ' ').length < 5) && !/^[0-9]+$/.test(reason)) {
-            if (reports.filter((report) => report.report_reason.toUpperCase() === reason.toUpperCase() &&
-                report.is_active && report.vehicle_id.toString() === content.vehicle_id.toString()).length !== 0) {
+        if (!/^[.,0123456789 ]+$/.test(reason) && !(reason.trim().replace(/\s\s+/g, ' ').length < 5)) {
+            if (reports.some((report) => report.reportReason.toUpperCase() === reason.toUpperCase() &&
+                report.active && Number(report.vehicleId) === Number(content.vehicleId))) {
                 setAlreadyReported(true);
                 setModalOpen(true);
                 setTimeout(() => {
@@ -42,12 +42,11 @@ const EmployeeReportCard = ({ content, vehicles, parkings, reports, updateReport
                 }, 1000);
                 try {
                     await createReportListItem({
-                        date: new Date(),
-                        parking_id: content.parking_id,
-                        vehicle_id: content.vehicle_id,
-                        employee_id: user.id,
-                        report_reason: reason.trim().replace(/\s\s+/g, ' ').toUpperCase(),
-                        is_active: true
+                        parkingId: content.parkingId,
+                        vehicleId: content.vehicleId,
+                        employeeId: user.id,
+                        reportReason: reason.trim().replace(/\s\s+/g, ' ').toUpperCase(),
+                        active: true
                     });
                     setReason("");
                     updateReports();
@@ -66,7 +65,7 @@ const EmployeeReportCard = ({ content, vehicles, parkings, reports, updateReport
         <>
             <Card>
                 <Card.Content >
-                    <Card.Header textAlign="center">{license_plate}</Card.Header>
+                    <Card.Header textAlign="center">{licensePlate}</Card.Header>
                     <Divider />
                     <Card.Description textAlign="center">
                         Parking name <br /> <strong>{parkingName}</strong>

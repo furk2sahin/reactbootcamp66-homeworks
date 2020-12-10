@@ -5,11 +5,10 @@ import { WordBreaker } from '../../WelcomeCard/Welcome.styles';
 
 const EmployeeRequestCard = ({ content, updateEmployees }) => {
     const [loading, setLoading] = useState(false);
-
     const acceptOnClickHandle = async () => {
         setLoading(true);
         try {
-            await updateEmployee(Number(content.id), { ...content, starting_date: new Date(), is_accepted: true });
+            await updateEmployee(Number(content.id), { accepted: true });
         } catch (err) {
         }
         setLoading(false);
@@ -29,7 +28,7 @@ const EmployeeRequestCard = ({ content, updateEmployees }) => {
     return (
         <Card>
             <Card.Content >
-                <Card.Header textAlign="center">{content.full_name}</Card.Header>
+                <Card.Header textAlign="center">{content.fullName}</Card.Header>
                 <Divider />
                 <Card.Description textAlign="center">
                     <WordBreaker>Phone : <strong>{content.phone}</strong></WordBreaker>

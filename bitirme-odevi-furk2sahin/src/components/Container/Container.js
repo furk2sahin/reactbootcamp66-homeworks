@@ -9,15 +9,10 @@ const Container = () => {
     const [authenticated, setAuthenticated] = useState('');
     const [user, setUser] = useState({});
 
-    if (routes.some((route) => route.path === window.location.pathname) && authenticated !== '') {
-        if (authenticated === "User" && window.location.pathname !== "/user")
-            window.location.pathname = "/user";
-        else if (authenticated === "Employee" && window.location.pathname !== "/employee")
-            window.location.pathname = "/employee";
-        else if (authenticated === "ParkingOwner" && window.location.pathname !== "/parkingowner")
-            window.location.pathname = "/parkingowner"
-    } else if (window.location.pathname !== "/register" && window.location.pathname !== "/login")
-        window.location.pathname = "/login"
+    if (((window.location.pathname === "/user" || window.location.pathname === "/employee" || window.location.pathname === "/parkingowner")
+        && authenticated === '') || (!routes.some(route => route.path === window.location.pathname) && window.location.pathname !== "/register")) {
+        window.location.pathname = "/login";
+    }
 
     return (
         <Wrapper>

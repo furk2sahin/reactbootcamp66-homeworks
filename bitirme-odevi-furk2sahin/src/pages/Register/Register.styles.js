@@ -13,5 +13,8 @@ export const Title = styled.div`
     color:#FB1D07;
     font-weight:bold;
     font-size:50px;
-    margin-top:5%;
+    margin-top:3%;
+    line-height:50px;
+    word-wrap:break-word;
+    word-break:break-word;
 `

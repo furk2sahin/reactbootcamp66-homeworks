@@ -3,8 +3,8 @@ import { Button, Card, Divider, Header, Icon, Modal } from 'semantic-ui-react'
 import { deleteEntranceExitLog, deleteReportListItem, deleteVehicle, updateParkArea } from '../../../services/api';
 
 
-const UserVehicleCard = ({ content, parkings, updateVehicles, parkAreas, setListedVehicleId, setListLogs, setListReports, allReports, allLogs }) => {
-    const parkingName = parkings.find((parking) => parking.id.toString() === content.parking_id.toString()).name;
+const UserVehicleCard = ({ content, parkings, updateVehicles, parkAreas, setListedVehicleId, setListLogs, setListReports }) => {
+    const parkingName = parkings.find((parking) => Number(parking.id) === Number(content.parkingId)).name;
     const [deleteCarLoading, setDeleteCarLoading] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
 
@@ -22,14 +22,12 @@ const UserVehicleCard = ({ content, parkings, updateVehicles, parkAreas, setList
         setDeleteCarLoading(true);
         try {
             await deleteVehicle(id);
-            const vehicleReportIds = allReports.filter((report) => report.vehicle_id.toString() === id.toString())
-                .map((report) => report.id);
-            const vehicleLogIds = allLogs.filter((log) => log.vehicle_id.toString() === id.toString())
-                .map((log) => log.id);
-            const areas = parkAreas.filter((area) => area.vehicle_id.toString() === id.toString() && area.is_full);
-            areas.forEach(async (area) => await updateParkArea(Number(area.id), { ...area, vehicle_id: 0, is_full: false }));
-            vehicleReportIds.forEach(async (report) => await deleteReportListItem(Number(report)));
-            vehicleLogIds.forEach(async (log) => await deleteEntranceExitLog(Number(log)));
+            await deleteReportListItem(Number(id));
+            await deleteEntranceExitLog(Number(id));
+            if (parkAreas.some((area) => Number(area.vehicleId) === Number(id) && area.full)) {
+                const areaToUpdate = parkAreas.find((area) => Number(area.vehicleId) === Number(id) && area.full)
+                await updateParkArea(Number(areaToUpdate.id), { vehicleId: 0, full: false })
+            }
         } catch (error) {
         }
         setDeleteCarLoading(false);
@@ -40,10 +38,10 @@ const UserVehicleCard = ({ content, parkings, updateVehicles, parkAreas, setList
         <>
             <Card>
                 <Card.Content >
-                    <Card.Header textAlign="center">{content.license_plate}</Card.Header>
+                    <Card.Header textAlign="center">{content.licensePlate}</Card.Header>
                     <Divider />
                     <Card.Description textAlign="center">
-                        Parking name <br /> <strong>{parkingName}</strong>
+                        Parking name <br /> <strong>{parkingName.toUpperCase()}</strong>
                     </Card.Description>
                 </Card.Content>
                 <Card.Content extra textAlign="center">

@@ -1,203 +1,129 @@
 import axios from 'axios';
 
-const instance1 = axios.create({ //parking_owner, parking, blacklist, employees
-    baseURL: 'https://5fb80d938e07f00016643932.mockapi.io/api'
-})
+const config = {
+    headers: {
+        authorization: 'Basic dXNlcjpEYXJrU2VjcmV0cw==',
+    }
+}
 
-const instance2 = axios.create({ //entrance_exit_log, park_area, report_list
-    baseURL: 'https://5faad17ab5c645001602b29c.mockapi.io/api'
-})
-
-const instance3 = axios.create({ //users, vehicles
-    baseURL: 'https://5fb81d458e07f00016643a28.mockapi.io/api'
+const instance = axios.create({
+    baseURL: 'https://furk2sahin-parking-app-backend.herokuapp.com/api'
 })
 
 //parking_owner
 
 export const getParkingOwners = () => {
-    return instance1.get('/parking_owner');
-}
-
-export const getParkingOwnerById = (parkingOwnerId) => {
-    return instance1.get(`/parking_owner/${parkingOwnerId}`);
-}
-
-export const updateParkingOwner = (parkingOwnerId, parkingOwner) => {
-    return instance1.put(`/parking_owner/${parkingOwnerId}`, parkingOwner);
-}
-
-export const deleteParkingOwner = (parkingOwnerId) => {
-    return instance1.delete(`/parking_owner/${parkingOwnerId}`);
+    return instance.get('/parking_owner', config);
 }
 
 //parking
 
 export const getParkings = () => {
-    return instance1.get('/parking');
-}
-
-export const getParkingById = (parkingId) => {
-    return instance1.get(`/parking/${parkingId}`);
+    return instance.get('/parking', config);
 }
 
 export const createParking = (parking) => {
-    return instance1.post('/parking', parking);
-}
-
-export const updateParking = (parkingId, parking) => {
-    return instance1.put(`/parking/${parkingId}`, parking);
-}
-
-export const deleteParking = (parkingId) => {
-    return instance1.delete(`/parking/${parkingId}`);
+    return instance.post('/parking', parking, config);
 }
 
 //blacklist
 
 export const getBlacklist = () => {
-    return instance1.get('/blacklist');
-}
-
-export const getBlacklistItemById = (blacklistId) => {
-    return instance1.get(`/blacklist/${blacklistId}`);
+    return instance.get('/blacklist', config);
 }
 
 export const createBlacklistItem = (blacklist) => {
-    return instance1.post('/blacklist', blacklist);
+    return instance.post('/blacklist', blacklist, config);
 }
 
 export const deleteBlacklistItem = (blacklistId) => {
-    return instance1.delete(`/blacklist/${blacklistId}`);
+    return instance.delete(`/blacklist/${blacklistId}`, config);
 }
 
 //employees
 
 export const getEmployees = () => {
-    return instance1.get('/employees');
-}
-
-export const getEmployeeById = (employeeId) => {
-    return instance1.get(`/employees/${employeeId}`);
+    return instance.get('/employees', config);
 }
 
 export const createEmployee = (employee) => {
-    return instance1.post('/employees', employee);
+    return instance.post('/employees', employee, config);
 }
 
 export const updateEmployee = (employeeId, employee) => {
-    return instance1.put(`/employees/${employeeId}`, employee);
+    return instance.put(`/employees/${employeeId}`, employee, config);
 }
 
 export const deleteEmployee = (employeeId) => {
-    return instance1.delete(`/employees/${employeeId}`);
+    return instance.delete(`/employees/${employeeId}`, config);
 }
 
 //entrance_exit_log
 
 export const getEntranceExitLogs = () => {
-    return instance2.get('/entrance_exit_log');
-}
-
-export const getEntranceExitLogById = (entranceExitLogId) => {
-    return instance2.get(`/entrance_exit_log/${entranceExitLogId}`);
+    return instance.get('/entrance_exit_log', config);
 }
 
 export const createEntranceExitLog = (entranceExitLog) => {
-    return instance2.post('/entrance_exit_log', entranceExitLog);
+    return instance.post('/entrance_exit_log', entranceExitLog, config);
 }
 
 export const updateEntranceExitLog = (entranceExitLogId, entranceExitLog) => {
-    return instance2.put(`/entrance_exit_log/${entranceExitLogId}`, entranceExitLog);
+    return instance.put(`/entrance_exit_log/${entranceExitLogId}`, entranceExitLog, config);
 }
 
-export const deleteEntranceExitLog = (entranceExitLogId) => {
-    return instance2.delete(`/entrance_exit_log/${entranceExitLogId}`);
+export const deleteEntranceExitLog = (vehicleId) => {
+    return instance.delete(`/entrance_exit_log/${vehicleId}`, config);
 }
 
 //park_area
 
 export const getParkAreas = () => {
-    return instance2.get('/park_area');
-}
-
-export const getParkAreaById = (parkAreaId) => {
-    return instance2.get(`/park_area/${parkAreaId}`);
-}
-
-export const createParkArea = (parkArea) => {
-    return instance2.post('/park_area', parkArea);
+    return instance.get('/park_area', config);
 }
 
 export const updateParkArea = (parkAreaId, parkArea) => {
-    return instance2.put(`/park_area/${parkAreaId}`, parkArea);
-}
-
-export const deleteParkArea = (parkAreaId) => {
-    return instance2.delete(`/park_area/${parkAreaId}`);
+    return instance.put(`/park_area/${parkAreaId}`, parkArea, config);
 }
 
 //report_list
 
 export const getReportList = () => {
-    return instance2.get('/report_list');
-}
-
-export const getReportListItemById = (reportListId) => {
-    return instance2.get(`/report_list/${reportListId}`);
+    return instance.get('/report_list', config);
 }
 
 export const createReportListItem = (reportList) => {
-    return instance2.post('/report_list', reportList);
+    return instance.post('/report_list', reportList, config);
 }
 
 export const updateReportListItem = (reportListId, reportList) => {
-    return instance2.put(`/report_list/${reportListId}`, reportList);
+    return instance.put(`/report_list/${reportListId}`, reportList, config);
 }
 
-export const deleteReportListItem = (reportListId) => {
-    return instance2.delete(`/report_list/${reportListId}`);
+export const deleteReportListItem = (vehicleId) => {
+    return instance.delete(`/report_list/${vehicleId}`, config);
 }
 
 //users
 
 export const getUsers = () => {
-    return instance3.get('/users');
-}
-
-export const getUserById = (userId) => {
-    return instance3.get(`/users/${userId}`);
+    return instance.get('/users', config);
 }
 
 export const createUser = (user) => {
-    return instance3.post('/users', user);
-}
-
-export const updateUser = (userId, user) => {
-    return instance3.put(`/users/${userId}`, user);
-}
-
-export const deleteUser = (userId) => {
-    return instance3.delete(`/users/${userId}`);
+    return instance.post('/users', user, config);
 }
 
 //vehicles
 
 export const getVehicles = () => {
-    return instance3.get('/vehicles');
-}
-
-export const getVehicleById = (vehicleId) => {
-    return instance3.get(`/vehicles/${vehicleId}`);
+    return instance.get('/vehicles', config);
 }
 
 export const createVehicle = (vehicle) => {
-    return instance3.post('/vehicles', vehicle);
-}
-
-export const updateVehicle = (vehicleId, vehicle) => {
-    return instance3.put(`/vehicles/${vehicleId}`, vehicle);
+    return instance.post('/vehicles', vehicle, config);
 }
 
 export const deleteVehicle = (vehicleId) => {
-    return instance3.delete(`/vehicles/${vehicleId}`);
+    return instance.delete(`/vehicles/${vehicleId}`, config);
 }

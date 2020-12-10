@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import 'semantic-ui-css/semantic.min.css'
-import { Button, Divider, Form, Grid, Icon, Message, Modal, Placeholder, Segment } from 'semantic-ui-react'
+import { Button, Form, Grid, Icon, Message, Modal, Placeholder, Segment } from 'semantic-ui-react'
 import Logo from '../../components/Logo/Logo'
 import { getEmployees, getParkingOwners, getUsers } from '../../services/api'
 import { Title, Wrapper } from './Login.styles'
@@ -45,10 +45,10 @@ const Login = () => {
             } catch (err) {
                 setServerError(err);
             }
-
             setLoading(false);
         }
         init();
+
     }, [])
 
     const handleUsernameChange = (event, { value }) => {
@@ -73,19 +73,19 @@ const Login = () => {
 
     const handleSigninOnClick = (event) => {
         event.preventDefault();
-        if (users.some((user) => user.user_name === username && user.password === password)) {
-            setUser(users.find((user) => user.user_name === username))
+        if (users.some((user) => user.userName === username && user.password === window.btoa(password))) {
+            setUser(users.find((user) => user.userName === username && user.password === window.btoa(password)))
             setAuthenticated('User');
             history.push("/user");
-        } else if (employees.some((employee) => employee.user_name === username && employee.password === password && employee.is_accepted)) {
-            setUser(employees.find((employee) => employee.user_name === username && employee.password === password && employee.is_accepted))
+        } else if (employees.some((employee) => employee.userName === username && employee.password === window.btoa(password) && employee.accepted)) {
+            setUser(employees.find((employee) => employee.userName === username && employee.password === window.btoa(password) && employee.accepted))
             setAuthenticated('Employee');
             history.push("/employee");
-        } else if (parkingOwners.some((parkingOwner) => parkingOwner.user_name === username && parkingOwner.password === password)) {
-            setUser(parkingOwners.find((parkingOwner) => parkingOwner.user_name === username && parkingOwner.password === password))
+        } else if (parkingOwners.some((parkingOwner) => parkingOwner.userName === username && parkingOwner.password === window.btoa(password))) {
+            setUser(parkingOwners.find((parkingOwner) => parkingOwner.userName === username && parkingOwner.password === window.btoa(password)))
             setAuthenticated('ParkingOwner');
             history.push("/parkingowner");
-        } else if (employees.some((employee) => employee.user_name === username && employee.password === password && !employee.is_accepted)) {
+        } else if (employees.some((employee) => employee.userName === username && employee.password === window.btoa(password) && !employee.accepted)) {
             setRequestWaiting(true);
             setModalOpen(true);
         } else {
@@ -97,59 +97,65 @@ const Login = () => {
     return (
         <>
             <Logo />
-            <Title> Parking App</Title>
-            <Wrapper>
-                <Segment placeholder>
-                    <Grid columns={2} relaxed='very' stackable >
-                        < Grid.Column >
-                            {!loading && !serverError ?
-                                <Form size="big">
-                                    <Form.Input
-                                        value={username}
-                                        icon='user'
-                                        iconPosition='left'
-                                        label='Username'
-                                        placeholder="Username (max 24)"
-                                        onChange={handleUsernameChange}
-                                    />
-                                    <Form.Input
-                                        value={password}
-                                        icon='lock'
-                                        iconPosition='left'
-                                        label='Password'
-                                        type='password'
-                                        placeholder="Password (max 24)"
-                                        onChange={handlePasswordChange}
-                                    />
-                                    <Button
-                                        primary
-                                        animated
-                                        size='big'
-                                        onClick={handleSigninOnClick}
-                                    >
-                                        <Button.Content visible>Sign in</Button.Content>
-                                        <Button.Content hidden><Icon name="sign-in" /></Button.Content>
-                                    </Button>
-                                </Form>
-                                : !serverError ?
-                                    <Placeholder>
-                                        <Placeholder.Line />
-                                        <Placeholder.Line />
-                                        <Placeholder.Line />
-                                        <Placeholder.Line />
-                                        <Placeholder.Line />
-                                    </Placeholder>
-                                    :
-                                    <Message negative>{serverError.toString()}</Message>
-                            }
-                        </Grid.Column>
-                        <Grid.Column verticalAlign='middle'>
-                            <Button content='Sign up' icon='signup' size='big' as={Link} to="/register" />
-                        </Grid.Column>
-                    </Grid>
-                    <Divider vertical>Or</Divider>
-                </Segment>
-            </Wrapper>
+            <Grid stackable>
+                <Grid.Column width="16">
+                    <Title> Parking App</Title>
+                </Grid.Column>
+                <Grid.Column width="16">
+                    <Wrapper>
+                        <Segment placeholder>
+                            <Grid columns={2} relaxed='very' stackable >
+                                < Grid.Column >
+                                    {!loading && !serverError ?
+                                        <Form size="big">
+                                            <Form.Input
+                                                value={username}
+                                                icon='user'
+                                                iconPosition='left'
+                                                label='Username'
+                                                placeholder="Username (max 24)"
+                                                onChange={handleUsernameChange}
+                                            />
+                                            <Form.Input
+                                                value={password}
+                                                icon='lock'
+                                                iconPosition='left'
+                                                label='Password'
+                                                type='password'
+                                                placeholder="Password (max 24)"
+                                                onChange={handlePasswordChange}
+                                            />
+                                            <Button
+                                                primary
+                                                animated
+                                                size='big'
+                                                onClick={handleSigninOnClick}
+                                            >
+                                                <Button.Content visible>Sign in</Button.Content>
+                                                <Button.Content hidden><Icon name="sign-in" /></Button.Content>
+                                            </Button>
+                                        </Form>
+                                        : !serverError ?
+                                            <Placeholder>
+                                                <Placeholder.Line />
+                                                <Placeholder.Line />
+                                                <Placeholder.Line />
+                                                <Placeholder.Line />
+                                                <Placeholder.Line />
+                                            </Placeholder>
+                                            :
+                                            <Message negative>{serverError.toString()}</Message>
+                                    }
+                                </Grid.Column>
+                                <Grid.Column verticalAlign='middle'>
+                                    <Button content='Sign up' icon='signup' size='big' as={Link} to="/register" />
+                                </Grid.Column>
+                            </Grid>
+                        </Segment>
+                    </Wrapper>
+                </Grid.Column>
+            </Grid>
+
             <Modal
                 dimmer="blurring"
                 open={modalOpen}
@@ -174,6 +180,7 @@ const Login = () => {
                     </Button>
                 </Modal.Actions>
             </Modal>
+
         </>
     )
 }

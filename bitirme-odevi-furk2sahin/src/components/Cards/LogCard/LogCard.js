@@ -7,31 +7,31 @@ import { Log } from './Logs.styles';
 const LogCard = ({ content, vehicles, parkings }) => {
     return (
         <Card>
-            <div style={{ border: "5px solid", borderColor: content.exit_time === "Still inside" ? "greenyellow" : "red" }} >
+            <div style={{ border: "5px solid", borderColor: !content.exitTime ? "greenyellow" : "red" }} >
                 <Card.Content >
                     <Card.Header textAlign="center"><strong>
-                        {vehicles.find((vehicle) => vehicle.id.toString() === content.vehicle_id.toString()).license_plate}
+                        {vehicles.find((vehicle) => Number(vehicle.id) === Number(content.vehicleId)).licensePlate}
                     </strong>
                     </Card.Header>
                     <Divider />
                     <Card.Description>
-                        <WordBreaker>Parking name  <Log>{parkings.find((parking) => parking.id.toString() === content.parking_id.toString()).name}</Log></WordBreaker>
+                        <WordBreaker>Parking name  <Log>{parkings.find((parking) => Number(parking.id) === Number(content.parkingId)).name.toUpperCase()}</Log></WordBreaker>
                         <WordBreaker>Entrance Time
                             <Log>
-                                <DateFormatter date={new Date(content.entrance_time)}></DateFormatter>
+                                <DateFormatter date={new Date(content.entranceTime)}></DateFormatter>
                             </Log>
                         </WordBreaker>
                         <WordBreaker>Exit time
                             <Log>
-                                {content.exit_time !== "Still inside" ?
+                                {content.exitTime ?
                                     <>
-                                        <DateFormatter date={new Date(content.exit_time)} />
+                                        <DateFormatter date={new Date(content.exitTime)} />
                                     </>
-                                    : content.exit_time
+                                    : "Still inside"
                                 }
                             </Log>
                         </WordBreaker>
-                        <WordBreaker>Park Area Number  <Log>{content.park_area_number}</Log></WordBreaker>
+                        <WordBreaker>Park Area Number  <Log>{content.parkAreaNumber}</Log></WordBreaker>
                     </Card.Description>
                 </Card.Content>
             </div>

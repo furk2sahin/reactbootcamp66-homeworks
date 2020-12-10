@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="09370341-728e-48b3-a212-91e4ef7a0423" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/src/components/Cards/AddNewVehicleCard/AddNewVehicleCard.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Cards/AddNewVehicleCard/AddNewVehicleCard.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Cards/BlacklistCard/BlacklistCard.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Cards/BlacklistCard/BlacklistCard.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Cards/EmployeeReportCard/EmployeeReportCard.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Cards/EmployeeReportCard/EmployeeReportCard.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Cards/EmployeeRequestCard/EmployeeRequestCard.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Cards/EmployeeRequestCard/EmployeeRequestCard.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Cards/LogCard/LogCard.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Cards/LogCard/LogCard.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Cards/ParkAreaCard/ParkAreaCard.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Cards/ParkAreaCard/ParkAreaCard.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Cards/ParkingOwnerReportCard/ParkingOwnerReportCard.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Cards/ParkingOwnerReportCard/ParkingOwnerReportCard.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Cards/ParkingOwnerVehicleCard/ParkingOwnerVehicleCard.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Cards/ParkingOwnerVehicleCard/ParkingOwnerVehicleCard.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Cards/UserVehicleCard/UserVehicleCard.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Cards/UserVehicleCard/UserVehicleCard.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Cards/UserVehicleReportCard/UserVehicleReportCard.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Cards/UserVehicleReportCard/UserVehicleReportCard.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Container/Container.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Container/Container.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Contents/Contents.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Contents/Contents.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/MenuItems/MenuItems.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/EmployeePage/EmployeePage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/EmployeePage/EmployeePage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Login/Login.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Login/Login.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Login/Login.styles.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Login/Login.styles.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/ParkingOwnerPage/ParkingOwnerPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/ParkingOwnerPage/ParkingOwnerPage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Register/Register.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Register/Register.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Register/Register.styles.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Register/Register.styles.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/UserPage/UserPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/UserPage/UserPage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/services/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/api.js" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectId" id="1lTgiHrZHBjHTUqxfkSuaVVaqUu" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="09370341-728e-48b3-a212-91e4ef7a0423" name="Default Changelist" comment="" />
+      <created>1607626620366</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1607626620366</updated>
+      <workItem from="1607626625862" duration="5000" />
+    </task>
+    <servers />
+  </component>
+</project>
